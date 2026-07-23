@@ -1,55 +1,85 @@
-# WH-347 Certified Payroll Auto-Compiler & Submission Prep Tool
+# WH-347 Auto-Compiler & Submission Prep Tool
 
-This backend pipeline automates the conversion of subcontractor and contractor CSV timesheets into pre‑filled WH‑347 certified payroll reports. It is designed for construction payroll compliance under Davis‑Bacon and related prevailing wage regulations.
+## 🏗️ Archetype: Document Automation Pipeline
 
-## Archetype
+This product is a **back‑end document automation pipeline** that converts raw CSV timesheets into pre‑filled WH‑347 certified payroll reports, ready for submission under the Davis‑Bacon and related Acts.
 
-- **Purpose**: Reduce manual data entry and validation for multi‑employee weekly payroll submissions.
-- **Input**: CSV timesheets placed in the `./input` directory.
-- **Output**: WH‑347 PDF reports in `./output/pdfs` and structured JSON records in `./output/records`.
-- **Statuses**:
-  - `ready_for_submission:good` — all data valid and prevailing wage compliant.
-  - `needs_review:warning` — missing county or rates below prevailing wage thresholds.
-  - `error:critical` — missing required fields or invalid numeric values.
+---
 
-## Input Format
+## How It Works
 
-Each CSV file should contain one row per employee with the following columns (names are case‑insensitive and flexible; the system maps them automatically):
+1. **Drop CSV timesheets** into `./input/`.
+2. **Run `python3 poller.py`** — the poller watches for new `.csv` files, processes each one, and generates:
+   - A WH‑347 PDF report in `./output/pdfs/`
+   - A record JSON with status and employee data in `./output/records/`
+3. **Check status per file:**
+   - `ready_for_submission:good` — all checks pass
+   - `needs_review:warning` — minor issues (e.g., rate below prevailing, unclassified worker)
+   - `error:critical` — missing required data
 
-| Column              | Description                                      |
-|---------------------|--------------------------------------------------|
-| Employee Name       | Full name of the worker                          |
-| SSN                 | Social Security Number                           |
-| Classification      | Trade classification (e.g. Carpenter)            |
-| Hours               | Total hours worked that week                     |
-| Rate                | Base hourly wage                                 |
-| Fringe Rate         | Hourly fringe benefit contribution               |
-| Project             | Project or job name                              |
-| Week Ending         | Date of the week ending (e.g. 2025-06-01)       |
-| County              | Work location county (optional, enables prevailing wage check) |
+---
 
-## Usage
+## Input CSV Format
+
+The poller expects a CSV with the following columns (names are flexible — the system maps headers automatically):
+
+| Standard Field | Common Header Examples |
+|---------------|------------------------|
+| `employee_name` | Employee Name, Name, Worker |
+| `ssn` | SSN, Social Security Number |
+| `classification` | Classification, Job Class |
+| `county` | County, Location |
+| `hours_worked` | Hours, Total Hours |
+| `base_rate` | Rate, Hourly Rate |
+| `fringe_rate` | Fringe Rate |
+| `project` | Project, Job Name |
+| `week_end_date` | Week Ending, End Date |
+
+**Example row:**
+
+```csv
+Employee Name,SSN,Classification,Hours,Rate,Fringe Rate,Project,Week Ending
+John Doe,123-45-6789,Carpenter,40,45.00,10.00,Highway Bridge,2025-06-01
+```
+
+---
+
+## Prevailing Wage Lookup
+
+For demo purposes, rates are hardcoded for **Cook County** and **DuPage County** (carpenter, electrician, laborer).  
+If no matching rate is found, the system uses the submitted rates and flags a warning.
+
+---
+
+## Quick Start
 
 ```bash
 # Install dependencies
 pip install -r requirements.txt
 
-# Place CSV files in ./input, then run:
-python3 poller.py
-
-# Run the demo:
+# Run the demo (creates sample CSV, processes it, prints PDF path)
 python3 run_demo.py
 
-# Run tests:
+# Run tests
 python3 run_tests.py
+
+# Process your own CSV files (place them in ./input first)
+python3 poller.py
 ```
 
-## Architecture
+---
 
-- `poller.py` — watches `./input`, processes new CSVs, orchestrates the pipeline.
-- `csv_mapper.py` — maps raw CSV headers to standardized fields (fallback header‑matching or AI extractor).
-- `prevailing_wage_lookup.py` — provides hardcoded demo prevailing wage dataset per county/classification.
-- `fringe_benefit_calculator.py` — computes fringe dollar amount.
-- `wh347_pdf_generator.py` — generates WH‑347 PDF using ReportLab.
-- `run_demo.py` — end‑to‑end example.
-- `run_tests.py` — unit tests.
+## Output
+
+- **PDF reports** in `./output/pdfs/` — formatted like WH‑347 with project info, employee rows, and totals.
+- **Record JSON files** in `./output/records/` — each contains the full processing result, status, warnings, and errors.
+
+---
+
+## Testing
+
+`python3 run_tests.py` runs unit tests against:
+- CSV column mapping (fallback header matching)
+- Prevailing wage lookup
+- Fringe benefit calculation
+- Full processing pipeline (happy path & edge cases)

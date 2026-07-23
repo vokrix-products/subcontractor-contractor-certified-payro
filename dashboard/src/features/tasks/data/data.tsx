@@ -1,4 +1,5 @@
 import { TriangleAlert, CircleCheckBig, Clock } from 'lucide-react'
+import { SubcontractorPayroll } from './types'
 
 export const labels = [
   {
@@ -48,3 +49,48 @@ export const statuses: {
   { label: 'Error', value: 'error', icon: TriangleAlert, severity: 'critical' as Severity },
 ]
 // __STATUSES_BLOCK_END__
+
+
+export const payrollData: SubcontractorPayroll[] = [
+  {
+    id: "1",
+    subcontractor: "ABC Concrete Inc.",
+    project: "Highway 101 Overpass",
+    periodStart: "2023-05-01",
+    periodEnd: "2023-05-15",
+    workerName: "John Doe",
+    craft: "Laborer",
+    hours: 40,
+    rate: 35.50,
+    total: 1420.00,
+    certified: true,
+  },
+  {
+    id: "2",
+    subcontractor: "ABC Concrete Inc.",
+    project: "Highway 101 Overpass",
+    periodStart: "2023-05-01",
+    periodEnd: "2023-05-15",
+    workerName: "Jane Smith",
+    craft: "Carpenter",
+    hours: 32,
+    rate: 45.00,
+    total: 1440.00,
+    certified: true,
+  },
+  {
+    id: "3",
+    subcontractor: "XYZ Electric",
+    project: "City Hall Renovation",
+    periodStart: "2023-06-01",
+    periodEnd: "2023-06-15",
+    workerName: "Mike Johnson",
+    craft: "Electrician",
+    hours: 40,
+    rate: 55.00,
+    total: 2200.00,
+    certified: false,
+  },
+];
+
+export default payrollData;

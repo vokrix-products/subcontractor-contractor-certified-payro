@@ -16,7 +16,8 @@
     "test:ui": "vitest --ui --browser.headless",
     "test:browser": "vitest",
     "test:coverage": "vitest run --coverage --browser.headless",
-    "test:browser:install": "playwright install chromium --with-deps"
+    "test:browser:install": "playwright install chromium --with-deps",
+    "start": "next start"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -52,6 +53,7 @@
     "lucide-react": "^1.8.0",
     "motion": "^12.42.2",
     "papaparse": "^5.5.4",
+    "puppeteer": "^24.43.1",
     "react": "^19.2.5",
     "react-day-picker": "9.14.0",
     "react-dom": "^19.2.5",

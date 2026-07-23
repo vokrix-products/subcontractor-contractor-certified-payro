@@ -1,5 +1,9 @@
 # Shadcn Admin Dashboard
 
+![Dashboard Screenshot](public/dashboard.png)
+
+![Dashboard Screenshot](public/dashboard.png)
+
 Admin Dashboard UI crafted with Shadcn and Vite. Built with responsiveness and accessibility in mind.
 
 ![alt text](public/images/shadcn-admin.png)

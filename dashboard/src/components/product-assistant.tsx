@@ -51,6 +51,20 @@ export function ProductAssistant() {
     const newMessages: Message[] = [...messages, { role: 'user', content: userMsg }]
     setMessages(newMessages)
     setLoading(true)
+    // Fallback replies if no API key configured
+    const fallbackReply = (userMsg) => {
+      const greetings = ['hi', 'hello', 'hey', 'help'];
+      const question = userMsg.toLowerCase();
+      if (greetings.some(g => question.includes(g))) {
+        return `Hi! I'm here to help with ${PRODUCT_NAME}. What would you like to know?`;
+      }
+      return "Sorry, the assistant backend is currently unavailable. Please try again later or contact support.";
+    };
+    if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === '') {
+      setMessages(m => [...m, { role: 'assistant', content: fallbackReply(userMsg) }]);
+      setLoading(false);
+      return;
+    }
     try {
       const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
         method: 'POST',

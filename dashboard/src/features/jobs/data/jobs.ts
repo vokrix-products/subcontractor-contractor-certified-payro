@@ -72,13 +72,11 @@ export function useUploadJob() {
       setError('Not logged in')
       return null
     }
-    // Trial check: block upload if no active subscription and record limit hit
-    if (user.product_id !== import.meta.env.VITE_PRODUCT_ID) {
-      const count = await getRecordCount(user.id)
-      if (count >= TRIAL_LIMIT) {
-        setTrialLimitReached(true)
-        return null
-      }
+    // Trial check: always enforce trial limit
+    const count = await getRecordCount(user.id)
+    if (count >= TRIAL_LIMIT) {
+      setTrialLimitReached(true)
+      return null
     }
     setUploading(true)
     setError(null)
@@ -124,13 +122,11 @@ export function useUploadJob() {
       setError('No files selected')
       return null
     }
-    // Trial check
-    if (user.product_id !== import.meta.env.VITE_PRODUCT_ID) {
-      const count = await getRecordCount(user.id)
-      if (count >= TRIAL_LIMIT) {
-        setTrialLimitReached(true)
-        return null
-      }
+    // Trial check: always enforce trial limit
+    const count = await getRecordCount(user.id)
+    if (count >= TRIAL_LIMIT) {
+      setTrialLimitReached(true)
+      return null
     }
     setUploading(true)
     setError(null)
